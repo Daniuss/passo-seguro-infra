@@ -79,10 +79,16 @@ nmcli con mod "$CON_INTERNET" ipv4.dns "$DNS_SERVIDORES" ipv4.ignore-auto-dns ye
 nmcli con up "$CON_INTERNET" > /dev/null
 
 # ---------- 6. Firewall ----------
-log INFO "Ativando o firewall e liberando SSH (22) e HTTP (80)"
+log INFO "Ativando o firewall e deixando liberados apenas SSH (22) e HTTP (80)"
 systemctl enable --now firewalld
-firewall-cmd --permanent --add-service=ssh > /dev/null
-firewall-cmd --permanent --add-service=http > /dev/null
+for servico in $(firewall-cmd --permanent --list-services); do
+  if [[ "$servico" != "ssh" && "$servico" != "http" ]]; then
+    firewall-cmd --permanent --remove-service="$servico" > /dev/null
+    log INFO "Fechado no firewall: $servico"
+  fi
+done
+firewall-cmd --permanent --add-service=ssh > /dev/null 2>&1
+firewall-cmd --permanent --add-service=http > /dev/null 2>&1
 firewall-cmd --reload > /dev/null
 
 # ---------- 7. Conferencia ----------
