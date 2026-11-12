@@ -1,4 +1,4 @@
-  #!/usr/bin/env bash
+#!/usr/bin/env bash
 # =============================================================
 # Passo Seguro - GS 2026.2 - Operating Systems
 # Script 04: monitoramento como servico tolerante a falhas
